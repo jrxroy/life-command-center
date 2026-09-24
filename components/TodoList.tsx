@@ -87,6 +87,8 @@ export function TodoList() {
       setSubtasks([]);
       setSubtaskInput('');
       setNewDeadline('');
+    } else if (error) {
+      console.error('Error adding todo:', error.message);
     }
   };
 
@@ -174,21 +176,20 @@ export function TodoList() {
 
   return (
     <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-100 space-y-6 relative text-slate-800">
-      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <h2 className="text-xl font-bold text-slate-800">To-Do Manager & Subtasks</h2>
         <div className="flex w-full sm:w-auto bg-slate-100 p-1 rounded-xl text-xs sm:text-sm border border-slate-200">
-          <button onClick={() => setFilter('all')} className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-medium transition ${filter === 'all' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}>Semua</button>
-          <button onClick={() => setFilter('active')} className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-medium transition ${filter === 'active' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}>Aktif</button>
-          <button onClick={() => setFilter('completed')} className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-medium transition ${filter === 'completed' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}>Selesai</button>
+          <button type="button" onClick={() => setFilter('all')} className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-medium transition ${filter === 'all' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}>Semua</button>
+          <button type="button" onClick={() => setFilter('active')} className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-medium transition ${filter === 'active' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}>Aktif</button>
+          <button type="button" onClick={() => setFilter('completed')} className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-medium transition ${filter === 'completed' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}>Selesai</button>
         </div>
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1 text-xs">
-        <button onClick={() => setCategoryFilter('all')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'all' ? 'bg-slate-800 text-white border border-slate-700' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>Semua Kategori</button>
-        <button onClick={() => setCategoryFilter('Pekerjaan')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Pekerjaan' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>🏢 Pekerjaan</button>
-        <button onClick={() => setCategoryFilter('Side Hustle')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Side Hustle' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>🚀 Side Hustle</button>
-        <button onClick={() => setCategoryFilter('Pribadi')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Pribadi' ? 'bg-purple-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>👤 Pribadi</button>
+        <button type="button" onClick={() => setCategoryFilter('all')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'all' ? 'bg-slate-800 text-white border border-slate-700' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>Semua Kategori</button>
+        <button type="button" onClick={() => setCategoryFilter('Pekerjaan')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Pekerjaan' ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>🏢 Pekerjaan</button>
+        <button type="button" onClick={() => setCategoryFilter('Side Hustle')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Side Hustle' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>🚀 Side Hustle</button>
+        <button type="button" onClick={() => setCategoryFilter('Pribadi')} className={`px-3 py-2 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Pribadi' ? 'bg-purple-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}`}>👤 Pribadi</button>
       </div>
 
       <form onSubmit={addTodo} className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
@@ -286,7 +287,7 @@ export function TodoList() {
             <div key={todo.id} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3 hover:border-slate-300 transition">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 flex-1">
-                  <button onClick={() => toggleTodo(todo.id, todo.completed)} className="text-slate-400 hover:text-indigo-600 transition mt-1">
+                  <button type="button" onClick={() => toggleTodo(todo.id, todo.completed)} className="text-slate-400 hover:text-indigo-600 transition mt-1">
                     <Circle size={22} />
                   </button>
                   <div className="space-y-1.5 flex-1">
@@ -313,10 +314,10 @@ export function TodoList() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => openEditModal(todo)} className="text-slate-400 hover:text-indigo-600 p-1.5 transition" title="Edit Tugas">
+                  <button type="button" onClick={() => openEditModal(todo)} className="text-slate-400 hover:text-indigo-600 p-1.5 transition" title="Edit Tugas">
                     <Edit3 size={16} />
                   </button>
-                  <button onClick={() => deleteTodo(todo.id)} className="text-slate-400 hover:text-rose-600 p-1.5 transition" title="Hapus Tugas">
+                  <button type="button" onClick={() => deleteTodo(todo.id)} className="text-slate-400 hover:text-rose-600 p-1.5 transition" title="Hapus Tugas">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -344,12 +345,12 @@ export function TodoList() {
           {completedTodos.map(todo => (
             <div key={todo.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 opacity-75 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <button onClick={() => toggleTodo(todo.id, todo.completed)} className="text-emerald-600 transition">
+                <button type="button" onClick={() => toggleTodo(todo.id, todo.completed)} className="text-emerald-600 transition">
                   <CheckCircle size={22} />
                 </button>
                 <span className="font-medium text-slate-400 text-sm line-through">{todo.title}</span>
               </div>
-              <button onClick={() => deleteTodo(todo.id)} className="text-slate-400 hover:text-rose-600 p-1.5 transition">
+              <button type="button" onClick={() => deleteTodo(todo.id)} className="text-slate-400 hover:text-rose-600 p-1.5 transition">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -362,7 +363,7 @@ export function TodoList() {
           <div className="bg-white rounded-2xl p-5 sm:p-6 w-full max-w-md shadow-2xl border border-slate-200 space-y-4 text-slate-800">
             <div className="flex justify-between items-center border-b border-slate-100 pb-3">
               <h3 className="font-bold text-slate-800 text-base">Edit Tugas</h3>
-              <button onClick={() => setEditingTodo(null)} className="text-slate-400 hover:text-slate-700 transition">
+              <button type="button" onClick={() => setEditingTodo(null)} className="text-slate-400 hover:text-slate-700 transition">
                 <X size={20} />
               </button>
             </div>
