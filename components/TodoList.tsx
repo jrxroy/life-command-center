@@ -19,7 +19,7 @@ interface Todo {
   title: string;
   priority: Priority;
   category: Category;
-  deadline: string | null;
+  deadline?: string | null;
   subtasks: Subtask[];
   completed: boolean;
 }
@@ -69,16 +69,21 @@ export function TodoList() {
       completed: false,
     }));
 
+    const payload: any = {
+      title: newTitle,
+      priority: newPriority,
+      category: newCategory,
+      subtasks: formattedSubtasks,
+      completed: false
+    };
+
+    if (newDeadline) {
+      payload.deadline = newDeadline;
+    }
+
     const { data, error } = await supabase
       .from('todos')
-      .insert([{
-        title: newTitle,
-        priority: newPriority,
-        category: newCategory,
-        deadline: newDeadline ? newDeadline : undefined,
-        subtasks: formattedSubtasks,
-        completed: false
-      }])
+      .insert([payload])
       .select();
 
     if (!error && data) {
@@ -87,6 +92,8 @@ export function TodoList() {
       setSubtasks([]);
       setSubtaskInput('');
       setNewDeadline('');
+    } else if (error) {
+      console.error('Error adding todo:', error);
     }
   };
 
@@ -134,14 +141,21 @@ export function TodoList() {
     e.preventDefault();
     if (!editingTodo || !editTitle.trim()) return;
 
+    const updatePayload: any = {
+      title: editTitle,
+      priority: editPriority,
+      category: editCategory,
+    };
+
+    if (editDeadline) {
+      updatePayload.deadline = editDeadline;
+    } else {
+      updatePayload.deadline = null;
+    }
+
     const { error } = await supabase
       .from('todos')
-      .update({
-        title: editTitle,
-        priority: editPriority,
-        category: editCategory,
-        deadline: editDeadline ? editDeadline : undefined,
-      })
+      .update(updatePayload)
       .eq('id', editingTodo.id);
 
     if (!error) {
