@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../src/lib/supabase';
+import { supabase } from '@//lib/supabase';
 import { Plus, Trash2, CheckCircle, Circle, Calendar, Edit3, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
