@@ -173,7 +173,7 @@ export function TodoList() {
   const completedTodos = filteredTodos.filter(t => t.completed);
 
   return (
-    <div className="bg-slate-800/60 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-700/50 space-y-6 relative text-slate-100">
+    <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-100 space-y-6 relative text-slate-800">
       
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <h2 className="text-xl font-bold text-white">To-Do Manager & Subtasks</h2>
