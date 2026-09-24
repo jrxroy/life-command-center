@@ -1,69 +1,104 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { TodoList } from '@/components/TodoList';
+import { HabitTracker } from '@/components/HabitTracker';
+import { Workplan } from '@/components/Workplan';
+import { Journaling } from '@/components/Journaling';
+import { Wishlist } from '@/components/Wishlist';
+import { CheckSquare, Flame, Target, BookOpen, Gift, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<'todo' | 'habit' | 'workplan' | 'journal' | 'wishlist'>('todo');
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-slate-900 text-slate-100 p-3 sm:p-6 lg:p-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        
+        {/* Header Utama dengan Tema Modern & Credit */}
+        <div className="bg-slate-800/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-slate-700/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-white">Roy’s Life & Command Center</h1>
+            <div className="flex items-center gap-1.5 mt-1 text-xs text-indigo-400 font-medium tracking-wide">
+              <ShieldCheck size={14} />
+              <span>Crafted by Roy Hamdani Simarmata</span>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Navigasi Tab */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-slate-800/60 backdrop-blur-xl p-2 rounded-2xl shadow-lg border border-slate-700/50">
+          <button
+            onClick={() => setActiveTab('todo')}
+            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-medium text-xs sm:text-sm transition ${
+              activeTab === 'todo'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold'
+                : 'text-slate-400 hover:bg-slate-700/60 hover:text-white'
+            }`}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <CheckSquare size={16} />
+            <span>To-Do</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('habit')}
+            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-medium text-xs sm:text-sm transition ${
+              activeTab === 'habit'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold'
+                : 'text-slate-400 hover:bg-slate-700/60 hover:text-white'
+            }`}
           >
-            Documentation
-          </a>
+            <Flame size={16} />
+            <span>Habit</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('workplan')}
+            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-medium text-xs sm:text-sm transition ${
+              activeTab === 'workplan'
+                ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30 font-semibold'
+                : 'text-slate-400 hover:bg-slate-700/60 hover:text-white'
+            }`}
+          >
+            <Target size={16} />
+            <span>Workplan</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('journal')}
+            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-medium text-xs sm:text-sm transition ${
+              activeTab === 'journal'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 font-semibold'
+                : 'text-slate-400 hover:bg-slate-700/60 hover:text-white'
+            }`}
+          >
+            <BookOpen size={16} />
+            <span>Journal</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('wishlist')}
+            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-medium text-xs sm:text-sm transition col-span-2 sm:col-span-1 ${
+              activeTab === 'wishlist'
+                ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30 font-semibold'
+                : 'text-slate-400 hover:bg-slate-700/60 hover:text-white'
+            }`}
+          >
+            <Gift size={16} />
+            <span>Wishlist</span>
+          </button>
         </div>
-      </main>
-    </div>
+
+        {/* Konten Tab Aktif */}
+        <div className="transition-all">
+          {activeTab === 'todo' && <TodoList />}
+          {activeTab === 'habit' && <HabitTracker />}
+          {activeTab === 'workplan' && <Workplan />}
+          {activeTab === 'journal' && <Journaling />}
+          {activeTab === 'wishlist' && <Wishlist />}
+        </div>
+
+      </div>
+    </main>
   );
 }
