@@ -128,7 +128,7 @@ export function Journaling() {
   });
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
+    <div className="bg-white text-slate-800 p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
       
       {/* Header */}
       <div className="flex justify-between items-center">
@@ -138,7 +138,7 @@ export function Journaling() {
         </span>
       </div>
 
-      {/* Form Tulis Jurnal Baru (Mobile Friendly) */}
+      {/* Form Tulis Jurnal Baru */}
       <form onSubmit={addJournal} className="space-y-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
         <div>
           <label className="block text-xs font-bold text-slate-500 mb-1">Judul Jurnal</label>
@@ -147,7 +147,7 @@ export function Journaling() {
             placeholder="Judul atau topik refleksi..."
             value={title}
             onChange={e => setTitle(e.target.value)}
-            className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-3.5 py-2.5 bg-white text-slate-800 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
 
@@ -156,7 +156,7 @@ export function Journaling() {
           <select
             value={category}
             onChange={e => setCategory(e.target.value)}
-            className="w-full px-3 py-2.5 bg-white rounded-xl border border-slate-200 text-sm font-medium text-slate-700"
+            className="w-full px-3 py-2.5 bg-white text-slate-800 rounded-xl border border-slate-200 text-sm font-medium"
           >
             <option value="Refleksi Harian">Refleksi Harian</option>
             <option value="Ide & Visi">Ide & Visi</option>
@@ -172,13 +172,13 @@ export function Journaling() {
             placeholder="Tuliskan isi jurnal secara mendetail..."
             value={content}
             onChange={e => setContent(e.target.value)}
-            className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-3.5 py-2.5 bg-white text-slate-800 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm transition shadow-sm"
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm transition shadow-sm cursor-pointer"
         >
           <Plus size={18} /> Simpan Jurnal
         </button>
@@ -193,20 +193,20 @@ export function Journaling() {
             placeholder="Cari arsip jurnal..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 text-slate-800 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
 
         <div className="flex gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
-          <button onClick={() => setCategoryFilter('all')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'}`}>Semua</button>
-          <button onClick={() => setCategoryFilter('Refleksi Harian')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Refleksi Harian' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Refleksi Harian</button>
-          <button onClick={() => setCategoryFilter('Ide & Visi')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Ide & Visi' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Ide & Visi</button>
-          <button onClick={() => setCategoryFilter('Evaluasi Diri')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Evaluasi Diri' ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Evaluasi Diri</button>
-          <button onClick={() => setCategoryFilter('Side Hustle Plan')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition ${categoryFilter === 'Side Hustle Plan' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Side Hustle Plan</button>
+          <button type="button" onClick={() => setCategoryFilter('all')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition cursor-pointer ${categoryFilter === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'}`}>Semua</button>
+          <button type="button" onClick={() => setCategoryFilter('Refleksi Harian')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition cursor-pointer ${categoryFilter === 'Refleksi Harian' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Refleksi Harian</button>
+          <button type="button" onClick={() => setCategoryFilter('Ide & Visi')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition cursor-pointer ${categoryFilter === 'Ide & Visi' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Ide & Visi</button>
+          <button type="button" onClick={() => setCategoryFilter('Evaluasi Diri')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition cursor-pointer ${categoryFilter === 'Evaluasi Diri' ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Evaluasi Diri</button>
+          <button type="button" onClick={() => setCategoryFilter('Side Hustle Plan')} className={`px-3 py-1.5 rounded-xl font-semibold whitespace-nowrap transition cursor-pointer ${categoryFilter === 'Side Hustle Plan' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}>Side Hustle Plan</button>
         </div>
       </div>
 
-      {/* Daftar Jurnal (Dengan Tanggal Terlihat Jelas) */}
+      {/* Daftar Jurnal */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Arsip Jurnal Tersimpan ({filteredJournals.length})</h3>
         {filteredJournals.length === 0 ? (
@@ -228,7 +228,6 @@ export function Journaling() {
                   </span>
                 </div>
                 
-                {/* Tanggal Terlihat Jelas di Luar */}
                 <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
                   <span className="flex items-center gap-1 text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md shrink-0">
                     <Calendar size={12} />
@@ -238,26 +237,28 @@ export function Journaling() {
                 </div>
               </div>
 
-              {/* Tombol Aksi Cepat */}
               <div className="flex items-center justify-between sm:justify-end gap-1 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 shrink-0">
                 <div className="flex items-center gap-1">
                   <button
+                    type="button"
                     onClick={(e) => exportAsTxt(journal, e)}
-                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition"
+                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition cursor-pointer"
                     title="Unduh .txt"
                   >
                     <Download size={16} />
                   </button>
                   <button
+                    type="button"
                     onClick={(e) => openEditModal(journal, e)}
-                    className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition"
+                    className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition cursor-pointer"
                     title="Edit"
                   >
                     <Edit3 size={16} />
                   </button>
                   <button
+                    type="button"
                     onClick={(e) => deleteJournal(journal.id, e)}
-                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition"
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition cursor-pointer"
                     title="Hapus"
                   >
                     <Trash2 size={16} />
@@ -288,8 +289,9 @@ export function Journaling() {
                 </span>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedJournal(null)}
-                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition shrink-0"
+                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition shrink-0 cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -303,14 +305,16 @@ export function Journaling() {
 
             <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row justify-end gap-2">
               <button
+                type="button"
                 onClick={(e) => exportAsTxt(selectedJournal, e)}
-                className="w-full sm:w-auto px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition"
+                className="w-full sm:w-auto px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
                 <Download size={14} /> Ekspor .txt
               </button>
               <button
+                type="button"
                 onClick={() => setSelectedJournal(null)}
-                className="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition"
+                className="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition cursor-pointer"
               >
                 Tutup
               </button>
@@ -326,7 +330,7 @@ export function Journaling() {
           <div className="bg-white rounded-2xl p-5 sm:p-6 w-full max-w-md shadow-xl border border-slate-100 space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex justify-between items-center border-b border-slate-100 pb-3">
               <h3 className="font-bold text-slate-800 text-base">Edit Jurnal</h3>
-              <button onClick={() => setEditingJournal(null)} className="text-slate-400 hover:text-slate-600 transition">
+              <button type="button" onClick={() => setEditingJournal(null)} className="text-slate-400 hover:text-slate-600 transition cursor-pointer">
                 <X size={20} />
               </button>
             </div>
@@ -338,7 +342,7 @@ export function Journaling() {
                   type="text"
                   value={editTitle}
                   onChange={e => setEditTitle(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 bg-slate-50 text-slate-800 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
 
@@ -347,7 +351,7 @@ export function Journaling() {
                 <select
                   value={editCategory}
                   onChange={e => setEditCategory(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 text-xs font-medium text-slate-700"
+                  className="w-full px-3 py-2 bg-slate-50 text-slate-800 rounded-xl border border-slate-200 text-xs font-medium"
                 >
                   <option value="Refleksi Harian">Refleksi Harian</option>
                   <option value="Ide & Visi">Ide & Visi</option>
@@ -362,7 +366,7 @@ export function Journaling() {
                   rows={5}
                   value={editContent}
                   onChange={e => setEditContent(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 bg-slate-50 text-slate-800 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
 
@@ -370,13 +374,13 @@ export function Journaling() {
                 <button
                   type="button"
                   onClick={() => setEditingJournal(null)}
-                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 py-2.5 rounded-xl text-xs font-semibold transition"
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl text-xs font-semibold transition shadow-sm"
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl text-xs font-semibold transition shadow-sm cursor-pointer"
                 >
                   Simpan
                 </button>

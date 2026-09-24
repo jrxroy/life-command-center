@@ -39,7 +39,6 @@ export function Wishlist() {
     if (!error && data) setWishlists(data);
   };
 
-  // Format angka ke format ribuan Indonesia (10.000.000)
   const formatNumberInput = (value: string) => {
     const numbers = value.replace(/\D/g, '');
     if (!numbers) {
@@ -103,7 +102,7 @@ export function Wishlist() {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
+    <div className="bg-white text-slate-800 p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
       
       {/* Header */}
       <div className="flex justify-between items-center">
@@ -122,7 +121,7 @@ export function Wishlist() {
             placeholder="Contoh: Upgrade PC untuk Editing & Coding..."
             value={title}
             onChange={e => setTitle(e.target.value)}
-            className="w-full px-3.5 py-2.5 bg-white rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full px-3.5 py-2.5 bg-white text-slate-800 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
 
@@ -132,7 +131,7 @@ export function Wishlist() {
             <select
               value={category}
               onChange={e => setCategory(e.target.value)}
-              className="w-full px-3 py-2.5 bg-white rounded-xl border border-slate-200 text-sm font-medium text-slate-700"
+              className="w-full px-3 py-2.5 bg-white text-slate-800 rounded-xl border border-slate-200 text-sm font-medium"
             >
               <option value="Aset & Barang">Aset & Barang</option>
               <option value="Liburan & Pengalaman">Liburan & Pengalaman</option>
@@ -147,7 +146,7 @@ export function Wishlist() {
               placeholder="Contoh: 5.000.000"
               value={estimatedCostDisplay}
               onChange={e => formatNumberInput(e.target.value)}
-              className="w-full px-3 py-2.5 bg-white rounded-xl border border-slate-200 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-3 py-2.5 bg-white text-slate-800 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
           <div>
@@ -156,14 +155,14 @@ export function Wishlist() {
               type="date"
               value={targetDate}
               onChange={e => setTargetDate(e.target.value)}
-              className="w-full px-3 py-2.5 bg-white rounded-xl border border-slate-200 text-sm font-medium text-slate-700"
+              className="w-full px-3 py-2.5 bg-white text-slate-800 rounded-xl border border-slate-200 text-sm font-medium"
             />
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm transition shadow-sm"
+          className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm transition shadow-sm cursor-pointer"
         >
           <Plus size={18} /> Tambah ke Wish List
         </button>
@@ -187,8 +186,9 @@ export function Wishlist() {
               >
                 <div className="flex items-start gap-3 flex-1 min-w-0">
                   <button
+                    type="button"
                     onClick={() => toggleStatus(item.id, item.status)}
-                    className={`mt-0.5 p-1 rounded-full transition shrink-0 ${
+                    className={`mt-0.5 p-1 rounded-full transition shrink-0 cursor-pointer ${
                       isAchieved ? 'text-emerald-600 bg-emerald-100' : 'text-slate-300 hover:text-pink-500'
                     }`}
                     title="Ubah Status"
@@ -228,8 +228,9 @@ export function Wishlist() {
                   </span>
 
                   <button
+                    type="button"
                     onClick={() => deleteWishlist(item.id)}
-                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition shrink-0"
+                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition shrink-0 cursor-pointer"
                     title="Hapus Wishlist"
                   >
                     <Trash2 size={16} />
