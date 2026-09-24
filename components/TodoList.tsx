@@ -56,7 +56,7 @@ export function TodoList() {
 
   const fetchTodos = async () => {
     const { data, error } = await supabase.from('todos').select('*').order('created_at', { ascending: false });
-    if (!error && data) setTodos(data as Todo[]);
+    if (!error && data) setTodos(data as any);
   };
 
   const addTodo = async (e: React.FormEvent) => {
@@ -82,7 +82,7 @@ export function TodoList() {
       .select();
 
     if (!error && data) {
-      setTodos([data[0] as Todo, ...todos]);
+      setTodos((prev: any) => [data[0], ...prev]);
       setNewTitle('');
       setSubtasks([]);
       setSubtaskInput('');
