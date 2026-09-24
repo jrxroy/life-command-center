@@ -75,7 +75,7 @@ export function TodoList() {
         title: newTitle,
         priority: newPriority,
         category: newCategory,
-        deadline: newDeadline || null,
+        deadline: newDeadline ? newDeadline : undefined,
         subtasks: formattedSubtasks,
         completed: false
       }])
@@ -140,7 +140,7 @@ export function TodoList() {
         title: editTitle,
         priority: editPriority,
         category: editCategory,
-        deadline: editDeadline || null,
+        deadline: editDeadline ? editDeadline : undefined,
       })
       .eq('id', editingTodo.id);
 
