@@ -19,7 +19,7 @@ interface Todo {
   title: string;
   priority: Priority;
   category: Category;
-  deadline?: string | null;
+  deadline: string | null;
   subtasks: Subtask[];
   completed: boolean;
 }
@@ -56,7 +56,7 @@ export function TodoList() {
 
   const fetchTodos = async () => {
     const { data, error } = await supabase.from('todos').select('*').order('created_at', { ascending: false });
-    if (!error && data) setTodos(data);
+    if (!error && data) setTodos(data as Todo[]);
   };
 
   const addTodo = async (e: React.FormEvent) => {
@@ -69,31 +69,24 @@ export function TodoList() {
       completed: false,
     }));
 
-    const payload: any = {
-      title: newTitle,
-      priority: newPriority,
-      category: newCategory,
-      subtasks: formattedSubtasks,
-      completed: false
-    };
-
-    if (newDeadline) {
-      payload.deadline = newDeadline;
-    }
-
     const { data, error } = await supabase
       .from('todos')
-      .insert([payload])
+      .insert([{
+        title: newTitle,
+        priority: newPriority,
+        category: newCategory,
+        deadline: newDeadline ? newDeadline : null,
+        subtasks: formattedSubtasks,
+        completed: false
+      }])
       .select();
 
     if (!error && data) {
-      setTodos([data[0], ...todos]);
+      setTodos([data[0] as Todo, ...todos]);
       setNewTitle('');
       setSubtasks([]);
       setSubtaskInput('');
       setNewDeadline('');
-    } else if (error) {
-      console.error('Error adding todo:', error);
     }
   };
 
@@ -141,21 +134,14 @@ export function TodoList() {
     e.preventDefault();
     if (!editingTodo || !editTitle.trim()) return;
 
-    const updatePayload: any = {
-      title: editTitle,
-      priority: editPriority,
-      category: editCategory,
-    };
-
-    if (editDeadline) {
-      updatePayload.deadline = editDeadline;
-    } else {
-      updatePayload.deadline = null;
-    }
-
     const { error } = await supabase
       .from('todos')
-      .update(updatePayload)
+      .update({
+        title: editTitle,
+        priority: editPriority,
+        category: editCategory,
+        deadline: editDeadline ? editDeadline : null,
+      })
       .eq('id', editingTodo.id);
 
     if (!error) {
