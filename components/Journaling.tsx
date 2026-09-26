@@ -28,7 +28,7 @@ interface JournalEntry {
 
 const todayStr = new Date().toISOString().split('T')[0];
 
-export function Journal() {
+export function Journaling() {
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [viewMode, setViewMode] = useState<'form' | 'story'>('form');
   const [loading, setLoading] = useState(false);
