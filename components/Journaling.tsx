@@ -25,6 +25,7 @@ interface JournalEntry {
   minggu_stop_doing: string;
   minggu_start_doing: string;
   minggu_next_focus: string;
+  ai_story?: string;
 }
 
 const todayStr = new Date().toISOString().split('T')[0];
@@ -56,6 +57,7 @@ export function Journaling() {
     minggu_stop_doing: '',
     minggu_start_doing: '',
     minggu_next_focus: '',
+    ai_story: '',
   });
 
   useEffect(() => {
@@ -72,6 +74,7 @@ export function Journaling() {
 
     if (data && !error) {
       setFormData(data);
+      setAiStory(data.ai_story || '');
     } else {
       setFormData({
         date,
@@ -92,10 +95,11 @@ export function Journaling() {
         minggu_stop_doing: '',
         minggu_start_doing: '',
         minggu_next_focus: '',
+        ai_story: '',
       });
+      setAiStory('');
     }
     setLoading(false);
-    setAiStory(''); // Reset cerita AI saat ganti tanggal
   };
 
   const handleChange = (field: keyof JournalEntry, value: string) => {
@@ -115,38 +119,45 @@ export function Journaling() {
     } else {
       alert('Jurnal berhasil disimpan!');
       setViewMode('story');
-      generateAIStory(formData);
+      if (!aiStory) {
+        await generateAIStory(formData, true);
+      }
     }
     setLoading(false);
   };
 
-  const generateAIStory = async (data: JournalEntry) => {
+  const generateAIStory = async (data: JournalEntry, saveToDb = true) => {
     setAiLoading(true);
     try {
       const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
       if (!apiKey) {
-        setAiStory('API Key Gemini belum diset di environment variables.');
-        setAiLoading(false);
-        return;
+        throw new Error('API Key Gemini (NEXT_PUBLIC_GEMINI_API_KEY) belum disetel di .env.local');
       }
 
       const ai = new GoogleGenAI({ apiKey });
-      
+
       const prompt = `
         Ubah data catatan jurnal harian/mingguan berikut menjadi sebuah narasi cerita reflektif yang hidup, mengalir, natural, memotivasi, dan tidak monoton. Jangan gunakan format poin-poin atau kuesioner tanya-jawab, melainkan rangkai menjadi paragraf cerita layaknya catatan harian pribadi yang elegan dan mendalam dalam bahasa Indonesia. Abaikan bagian yang kosong atau bernilai kosong.
-
         Data Jurnal Tanggal ${selectedDate}:
-        - Pagi (Fokus/Intensi): Prioritas penting: "${data.pagi_important}", Hal dihindari: "${data.pagi_avoid}", Satu target mutlak: "${data.pagi_one_thing}".
-        - Malam (Evaluasi): Kejadian: "${data.malam_what_happened}", Berjalan baik: "${data.malam_went_well}", Gagal/Kendala: "${data.malam_went_wrong}", Alasan: "${data.malam_why}", Pelajaran: "${data.malam_learned}", Tindakan besok: "${data.malam_tomorrow_action}".
-        - Mingguan (Audit Pola): Waktu terbanyak: "${data.minggu_time_spent}", Hasil terbaik: "${data.minggu_best_result}", Masalah berulang: "${data.minggu_recurring_problem}", Kebiasaan buruk: "${data.minggu_bad_habit}", Berhenti dilakukan: "${data.minggu_stop_doing}", Fokus minggu depan: "${data.minggu_next_focus}".
+        - Pagi: Prioritas: "${data.pagi_important}", Dihindari: "${data.pagi_avoid}", Target: "${data.pagi_one_thing}".
+        - Malam: Kejadian: "${data.malam_what_happened}", Berjalan baik: "${data.malam_went_well}", Kendala: "${data.malam_went_wrong}", Alasan: "${data.malam_why}", Pelajaran: "${data.malam_learned}", Aksi besok: "${data.malam_tomorrow_action}".
+        - Mingguan: Waktu terbanyak: "${data.minggu_time_spent}", Hasil: "${data.minggu_best_result}", Masalah: "${data.minggu_recurring_problem}", Kebiasaan buruk: "${data.minggu_bad_habit}", Berhenti: "${data.minggu_stop_doing}", Fokus: "${data.minggu_next_focus}".
       `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-3.8-flash',
         contents: prompt,
       });
 
-      setAiStory(response.text || 'Gagal merangkai cerita.');
+      const text = response.text || 'Gagal merangkai cerita.';
+      setAiStory(text);
+
+      if (saveToDb) {
+        await supabase
+          .from('journals')
+          .update({ ai_story: text })
+          .eq('date', selectedDate);
+      }
     } catch (err: any) {
       setAiStory('Terjadi kesalahan saat menghasilkan cerita AI: ' + err.message);
     }
@@ -160,8 +171,6 @@ export function Journaling() {
 
   return (
     <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-100 space-y-6 text-slate-800">
-      
-      {/* Header & Navigasi Utama */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
         <div>
           <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -195,7 +204,7 @@ export function Journaling() {
               type="button"
               onClick={() => {
                 setViewMode('story');
-                if (!aiStory) generateAIStory(formData);
+                if (!aiStory) generateAIStory(formData, true);
               }}
               className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 ${
                 viewMode === 'story' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
@@ -210,9 +219,7 @@ export function Journaling() {
       {loading ? (
         <p className="text-center py-10 text-slate-400 text-sm italic">Memuat data jurnal...</p>
       ) : viewMode === 'form' ? (
-        /* --- MODE FORM PENGISIAN DENGAN 3 PILIHAN --- */
         <div className="space-y-6">
-          
           <div className="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
             <button
               type="button"
@@ -244,7 +251,6 @@ export function Journaling() {
           </div>
 
           <form onSubmit={handleSave} className="space-y-6">
-            
             {activeSection === 'pagi' && (
               <div className="bg-amber-50/50 border border-amber-200/60 p-4 sm:p-5 rounded-2xl space-y-4">
                 <h3 className="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
@@ -428,7 +434,6 @@ export function Journaling() {
           </form>
         </div>
       ) : (
-        /* --- MODE BACA CERITA DINAMIS OLEH GEMINI AI --- */
         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6 leading-relaxed">
           <div className="flex justify-between items-center border-b border-slate-200 pb-4">
             <div>
@@ -439,7 +444,7 @@ export function Journaling() {
             </div>
             <button
               type="button"
-              onClick={() => generateAIStory(formData)}
+              onClick={() => generateAIStory(formData, true)}
               disabled={aiLoading}
               className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1 border border-indigo-200"
             >
@@ -459,22 +464,30 @@ export function Journaling() {
                 {aiStory}
               </div>
             ) : (
-              <p className="text-slate-400 italic text-center w-full">Belum ada cerita yang dihasilkan. Klik tombol di atas untuk merangkai cerita.</p>
+              <p className="text-slate-400 italic text-center w-full">Belum ada cerita yang dihasilkan. Klik tombol di bawah atau simpan jurnal untuk membuat cerita.</p>
             )}
           </div>
 
-          <div className="pt-4 flex justify-end border-t border-slate-200">
+          <div className="pt-4 flex justify-between items-center border-t border-slate-200">
+            {!aiStory && !aiLoading && (
+              <button
+                type="button"
+                onClick={() => generateAIStory(formData, true)}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+              >
+                <Sparkles size={14} /> Generate Cerita Sekarang
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setViewMode('form')}
-              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ml-auto"
             >
               <Edit3 size={14} /> Edit Jurnal Ini
             </button>
           </div>
         </div>
       )}
-
     </div>
   );
 }
