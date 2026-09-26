@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { Plus, CheckCircle2, Circle, Trash2, Calendar } from 'lucide-react';
+import { Plus, CheckCircle2, Circle, Trash2, Edit3, X, Save } from 'lucide-react';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -23,6 +23,9 @@ export function Workplan() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Side Hustle');
   const [description, setDescription] = useState('');
+  
+  // State untuk melacak item yang sedang diedit
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchWorkplans();
@@ -36,27 +39,62 @@ export function Workplan() {
     if (!error && data) setWorkplans(data);
   };
 
-  const addWorkplan = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const { data, error } = await supabase
-      .from('workplans')
-      .insert([{
-        title,
-        category,
-        description,
-        status: 'Belum Dimulai'
-      }])
-      .select();
+    if (editingId) {
+      // Mode Update / Edit
+      const { error } = await supabase
+        .from('workplans')
+        .update({ title, category, description })
+        .eq('id', editingId);
 
-    if (!error && data) {
-      setWorkplans([data[0], ...workplans]);
-      setTitle('');
-      setDescription('');
-    } else if (error) {
-      alert('Gagal menambah workplan: ' + error.message);
+      if (!error) {
+        setWorkplans(workplans.map(w => w.id === editingId ? { ...w, title, category, description } : w));
+        cancelEdit();
+      } else {
+        alert('Gagal memperbarui workplan: ' + error.message);
+      }
+    } else {
+      // Mode Tambah Baru
+      const { data, error } = await supabase
+        .from('workplans')
+        .insert([{
+          title,
+          category,
+          description,
+          status: 'Belum Dimulai'
+        }])
+        .select();
+
+      if (!error && data) {
+        setWorkplans([data[0], ...workplans]);
+        resetForm();
+      } else if (error) {
+        alert('Gagal menambah workplan: ' + error.message);
+      }
     }
+  };
+
+  const startEdit = (item: WorkplanItem) => {
+    setEditingId(item.id);
+    setTitle(item.title);
+    setCategory(item.category);
+    setDescription(item.description);
+    // Scroll ke atas agar form terlihat
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setTitle('');
+    setCategory('Side Hustle');
+    setDescription('');
   };
 
   const toggleStatus = async (id: string, currentStatus: string) => {
@@ -79,6 +117,7 @@ export function Workplan() {
     const { error } = await supabase.from('workplans').delete().eq('id', id);
     if (!error) {
       setWorkplans(workplans.filter(w => w.id !== id));
+      if (editingId === id) cancelEdit();
     }
   };
 
@@ -93,8 +132,23 @@ export function Workplan() {
         </span>
       </div>
 
-      {/* Form Tambah Workplan */}
-      <form onSubmit={addWorkplan} className="space-y-3 bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200">
+      {/* Form Tambah / Edit Workplan */}
+      <form onSubmit={handleSubmit} className={`space-y-3 p-3.5 sm:p-4 rounded-2xl border transition ${editingId ? 'bg-amber-50/60 border-amber-200' : 'bg-slate-50 border-slate-200'}`}>
+        <div className="flex justify-between items-center">
+          <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider">
+            {editingId ? '✏️ Edit Rencana Kerja' : '✨ Tambah Rencana Kerja Baru'}
+          </label>
+          {editingId && (
+            <button
+              type="button"
+              onClick={cancelEdit}
+              className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1 font-semibold cursor-pointer"
+            >
+              <X size={14} /> Batal Edit
+            </button>
+          )}
+        </div>
+
         <div>
           <label className="block text-xs font-bold text-slate-500 mb-1">Judul Rencana Kerja</label>
           <input
@@ -135,9 +189,11 @@ export function Workplan() {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm transition shadow-sm cursor-pointer"
+          className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm transition shadow-sm cursor-pointer text-white ${
+            editingId ? 'bg-amber-600 hover:bg-amber-700' : 'bg-indigo-600 hover:bg-indigo-700'
+          }`}
         >
-          <Plus size={18} /> Tambah Rencana Kerja
+          {editingId ? <><Save size={18} /> Simpan Perubahan</> : <><Plus size={18} /> Tambah Rencana Kerja</>}
         </button>
       </form>
 
@@ -150,12 +206,13 @@ export function Workplan() {
           workplans.map(item => {
             const isDone = item.status === 'Selesai';
             const isInProgress = item.status === 'Sedang Berjalan';
+            const isEditingThis = editingId === item.id;
 
             return (
               <div 
                 key={item.id} 
                 className={`border rounded-2xl p-4 shadow-sm flex flex-col gap-3 transition ${
-                  isDone ? 'bg-emerald-50/50 border-emerald-200' : 'bg-white border-slate-200 hover:border-indigo-300'
+                  isEditingThis ? 'border-amber-400 bg-amber-50/30 ring-2 ring-amber-200' : isDone ? 'bg-emerald-50/50 border-emerald-200' : 'bg-white border-slate-200 hover:border-indigo-300'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -189,14 +246,24 @@ export function Workplan() {
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => deleteWorkplan(item.id)}
-                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition shrink-0 cursor-pointer"
-                    title="Hapus Rencana"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => startEdit(item)}
+                      className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition cursor-pointer"
+                      title="Edit Rencana"
+                    >
+                      <Edit3 size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => deleteWorkplan(item.id)}
+                      className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition cursor-pointer"
+                      title="Hapus Rencana"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-100">
